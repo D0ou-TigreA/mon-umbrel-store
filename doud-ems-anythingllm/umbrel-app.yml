@@ -4,7 +4,7 @@ name: AnythingLLM
 tagline: Application IA tout-en-un pour discuter avec vos documents
 icon: https://elest.io/images/softwares/430/logo.png
 category: AI
-version: "1.12.1"
+version: "1.12.1-image"
 port: 3001
 description: >-
   AnythingLLM est une application open-source full-stack qui vous permet
