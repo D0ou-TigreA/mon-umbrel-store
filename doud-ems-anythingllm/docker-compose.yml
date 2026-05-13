@@ -9,6 +9,7 @@ services:
 
   web:
     image: mintplexlabs/anythingllm:latest
+    user: root
     restart: on-failure
     cap_add:
       - SYS_ADMIN
