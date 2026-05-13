@@ -1,29 +1,30 @@
 manifestVersion: 1
-id: sparkles-hello-world
-name: Hello World
-tagline: Replace this tagline with your app's tagline
-icon: https://svgur.com/i/mvA.svg
-category: Development
-version: "1.0.0"
-port: 4000
+id: doud-ems-anythingllm
+name: AnythingLLM
+tagline: Application IA tout-en-un pour discuter avec vos documents
+icon: https://raw.githubusercontent.com/Mintplex-Labs/anything-llm/master/images/wordmark.png
+category: AI
+version: "1.8.4"
+port: 3001
 description: >-
-  Add your app's description here.
+  AnythingLLM est une application open-source full-stack qui vous permet
+  de discuter avec n'importe quel document (PDF, Word, sites web, etc.)
+  en utilisant le modèle de langage (LLM) de votre choix.
 
 
-  You can also add newlines!
-
-developer: Umbrel
-website: https://umbrel.com
-submitter: Umbrel
-submission: https://github.com/getumbrel/umbrel-hello-world-app
-repo: https://github.com/getumbrel/umbrel-hello-world-app
-support: https://github.com/getumbrel/umbrel-hello-world-app/issues
+  Compatible avec OpenAI, Anthropic, des modèles locaux via Ollama, et bien plus.
+developer: Mintplex Labs
+website: https://anythingllm.com
+submitter: Edouard MIELS
+submission: https://github.com/D0ou-TigreA/mon-umbrel-store
+repo: https://github.com/Mintplex-Labs/anything-llm
+support: https://github.com/Mintplex-Labs/anything-llm/issues
 gallery:
-  - https://i.imgur.com/yyVG0Jb.jpeg
-  - https://i.imgur.com/yyVG0Jb.jpeg
-  - https://i.imgur.com/yyVG0Jb.jpeg
+  - https://raw.githubusercontent.com/Mintplex-Labs/anything-llm/master/images/screenshots/home.png
+  - https://raw.githubusercontent.com/Mintplex-Labs/anything-llm/master/images/screenshots/chatting.png
+  - https://raw.githubusercontent.com/Mintplex-Labs/anything-llm/master/images/screenshots/workspace_settings.png
 releaseNotes: >-
-  Add what's new in the latest version of your app here.
+  Première installation d'AnythingLLM via mon store communautaire.
 dependencies: []
 path: ""
 defaultUsername: ""
