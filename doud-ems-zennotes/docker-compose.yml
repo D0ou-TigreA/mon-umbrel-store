@@ -3,14 +3,26 @@ version: "3.7"
 services:
   app_proxy:
     environment:
-      APP_HOST: doud-ems-zennotes-server-1
+      APP_HOST: doud-ems-zennotes_server_1
       APP_PORT: 7878
+
+  init:
+    image: alpine:3.19
+    user: "0:0"
+    command: sh -c "mkdir -p /workspace /data && chown -R 1000:1000 /workspace /data"
+    restart: "no"
+    volumes:
+      - ${APP_DATA_DIR}/data/workspace:/workspace
+      - ${APP_DATA_DIR}/data/server:/data
 
   server:
     image: adibhanna/zennotes:latest
     restart: on-failure
     stop_grace_period: 1m
     user: "1000:1000"
+    depends_on:
+      init:
+        condition: service_completed_successfully
     environment:
       ZENNOTES_AUTH_TOKEN: "${APP_SEED}"
       ZENNOTES_BROWSE_ROOTS: "/workspace"
