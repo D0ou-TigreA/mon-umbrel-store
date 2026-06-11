@@ -4,7 +4,7 @@ name: ZenNotes
 tagline: Keyboard-first Markdown notes with Vim motions
 icon: https://github.com/ZenNotes/zennotes/blob/main/apps/desktop/build/icon.png?raw=true
 category: Productivity
-version: "2.2.0"
+version: "2.2.1"
 port: 7878
 description: >-
   ZenNotes is a keyboard-first, Markdown-first notes app.
