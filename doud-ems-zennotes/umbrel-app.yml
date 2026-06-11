@@ -2,6 +2,7 @@ manifestVersion: 1
 id: doud-ems-zennotes
 name: ZenNotes
 tagline: Keyboard-first Markdown notes with Vim motions
+icon: https://github.com/ZenNotes/zennotes/blob/main/apps/desktop/build/icon.png?raw=true
 category: Productivity
 version: "2.2.0"
 port: 7878
