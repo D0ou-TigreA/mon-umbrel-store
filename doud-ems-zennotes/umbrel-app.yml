@@ -1,0 +1,32 @@
+manifestVersion: 1
+id: doud-ems-zennotes
+name: ZenNotes
+tagline: Keyboard-first Markdown notes with Vim motions
+category: Productivity
+version: "2.2.0"
+port: 7878
+description: >-
+  ZenNotes is a keyboard-first, Markdown-first notes app.
+  Your notes stay as plain .md files in a vault you own.
+  Modal editing, Vim motions, split panes, preview, and a
+  bundled MCP server are all first-class.
+
+
+  ⚠️ On first connection, you will need to paste the auth token.
+  Retrieve it from the app's data folder on your Umbrel
+  (~/umbrel/app-data/doud-ems-zennotes/data/auth-token)
+  or from the docker-compose environment variable.
+developer: ZenNotes (adibhanna)
+website: https://zennotes.org
+submitter: D0ou-TigreA
+submission: https://github.com/D0ou-TigreA/mon-umbrel-store
+repo: https://github.com/ZenNotes/zennotes
+support: https://github.com/ZenNotes/zennotes/issues
+gallery:
+  - https://zennotes.org/og-cover.png
+releaseNotes: >-
+  Initial Umbrel community packaging of ZenNotes 2.2.0.
+dependencies: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""
