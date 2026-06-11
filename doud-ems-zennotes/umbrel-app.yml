@@ -24,7 +24,7 @@ submission: https://github.com/D0ou-TigreA/mon-umbrel-store
 repo: https://github.com/ZenNotes/zennotes
 support: https://github.com/ZenNotes/zennotes/issues
 gallery:
-  - https://zennotes.org/og-cover.png
+  - https://zennotes.org/images/app.png
 releaseNotes: >-
   Initial Umbrel community packaging of ZenNotes 2.2.0.
 dependencies: []
