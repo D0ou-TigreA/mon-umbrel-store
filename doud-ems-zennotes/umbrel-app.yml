@@ -4,7 +4,7 @@ name: ZenNotes
 tagline: Keyboard-first Markdown notes with Vim motions
 icon: https://github.com/ZenNotes/zennotes/blob/main/apps/desktop/build/icon.png?raw=true
 category: Productivity
-version: "2.3.0"
+version: "2.4.0"
 port: 7878
 description: >-
   ZenNotes is a keyboard-first, Markdown-first notes app.
@@ -26,15 +26,21 @@ support: https://github.com/ZenNotes/zennotes/issues
 gallery:
   - https://zennotes.org/images/app.png
 releaseNotes: >-
-  ## v2.3.0 (17 juin 2026)
+  ## v2.4.0 (20 juin 2026)
+  - Patterns configurables pour daily/weekly notes (folder + filename)
+  - Tâches automatiquement dues à la date de la daily note
+  - Vue calendrier des tâches (drag & drop, rollover, navigation Vim)
+  - Mode Edit Live Preview (tables, callouts, wikilinks rendus inline)
+  - Navigation Back/Forward + tabs restylés
+  - ⚠️ Databases migrées vers le format dossier `.base/` (auto)
+  
+  ## v2.3.0 (11 juin 2026)
   - Wikilinks auto-update au renommage
   - Mode database keyboard-driven
   - Navigation pickers Ctrl+J / Ctrl+K
   
   ## v2.2.0 (10 juin 2026)
   - Version initiale packagée pour Umbrel
-  - Image Docker multi-arch adibhanna/zennotes
-  - Init container pour permissions volumes
 dependencies: []
 path: ""
 defaultUsername: ""
