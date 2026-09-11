@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      # Format Umbrel : <app-id>_<service>_1
+      APP_HOST: doud-ems-hindsight_server_1
+      APP_PORT: 9999   # Control Plane (Web UI)
+
+  server:
+    image: ghcr.io/vectorize-io/hindsight:latest
+    restart: unless-stopped
+    shm_size: "1gb"
+    # L'image tourne en UID 1000 par défaut (recommandé par la doc officielle)
+    user: "1000:1000"
+    init: true
+    ports:
+      # API exposée sur le LAN (l'UI 9999 passe déjà par app_proxy Umbrel)
+      - "8888:8888"
+    environment:
+      # ⚠️ Provider LLM non configuré pour l'instant.
+      # À ajouter plus tard (HINDSIGHT_API_LLM_PROVIDER, HINDSIGHT_API_LLM_API_KEY,
+      # HINDSIGHT_API_LLM_MODEL) — voir https://hindsight.vectorize.io/developer/models
+      #
+      # Identité stable du worker (sinon Docker attribue un ID aléatoire à chaque
+      # restart et les tâches en cours deviennent orphelines — cf. doc officielle).
+      HINDSIGHT_API_WORKER_ID: doud-ems-hindsight-worker-1
+    volumes:
+      # Persistance de la base pg0 dans l'espace app-data Umbrel
+      - ${APP_DATA_DIR}/data/pg0:/home/hindsight/.pg0
