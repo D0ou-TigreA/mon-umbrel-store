@@ -18,8 +18,9 @@ services:
       - "8888:8888"
     environment:
       HINDSIGHT_API_LLM_PROVIDER: openai
-      HINDSIGHT_API_LLM_API_KEY: sk-ta-clé-openai
-      HINDSIGHT_API_LLM_MODEL: gpt-4o-mini
+      HINDSIGHT_API_LLM_API_KEY: TA_CLÉ_INFOMANIAK
+      HINDSIGHT_API_LLM_BASE_URL: https://api.infomaniak.com/2/ai/PRODUCT_ID/openai/v1
+      HINDSIGHT_API_LLM_MODEL: qwen3
       HINDSIGHT_API_WORKER_ID: doud-ems-hindsight-worker-1
       # ⚠️ Provider LLM non configuré pour l'instant.
       # À ajouter plus tard (HINDSIGHT_API_LLM_PROVIDER, HINDSIGHT_API_LLM_API_KEY,
