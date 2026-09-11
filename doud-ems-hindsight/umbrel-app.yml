@@ -1,0 +1,42 @@
+manifestVersion: 1
+id: doud-ems-hindsight
+name: Hindsight
+tagline: State-of-the-art memory for AI agents
+icon: https://hindsight.vectorize.io/img/logo.svg
+category: ai
+version: "latest"
+port: 9999
+description: >-
+  Hindsight is a memory system for AI agents. It stores, consolidates and
+  retrieves knowledge across sessions using multi-strategy retrieval (semantic,
+  keyword, graph, temporal) and observation consolidation.
+
+
+  This deployment uses the official all-in-one image
+  `ghcr.io/vectorize-io/hindsight`, which bundles:
+
+  - The API server (port 8888)
+
+  - The Control Plane / Web UI (port 9999) — what this tile opens
+
+  - An embedded PostgreSQL (pg0) with pgvector, stored in the app data dir
+
+
+  ℹ️ LLM provider not configured yet. To enable fact extraction / reflection,
+  add `HINDSIGHT_API_LLM_PROVIDER`, `HINDSIGHT_API_LLM_API_KEY` and
+  `HINDSIGHT_API_LLM_MODEL` to the app's docker-compose.yml.
+developer: Vectorize
+website: https://hindsight.vectorize.io
+submitter: Edouard MIELS
+submission: https://github.com/D0ou-TigreA/mon-umbrel-store
+repo: https://github.com/vectorize-io/hindsight
+support: https://hindsight.vectorize.io/
+gallery:
+  - https://hindsight.vectorize.io/img/logo.png
+releaseNotes: >-
+  Initial release: Hindsight all-in-one deployment (API 8888 + UI 9999 +
+  embedded PostgreSQL). Requires a LLM API key configured in the compose file.
+dependencies: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""
