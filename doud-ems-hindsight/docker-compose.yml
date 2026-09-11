@@ -9,9 +9,8 @@ services:
 
   server:
     image: ghcr.io/vectorize-io/hindsight:latest
-    restart: unless-stopped
+    restart: on-failure
     shm_size: "1gb"
-    # L'image tourne en UID 1000 par défaut (recommandé par la doc officielle)
     user: "1000:1000"
     init: true
     ports:
@@ -26,7 +25,7 @@ services:
       # restart et les tâches en cours deviennent orphelines — cf. doc officielle).
       HINDSIGHT_API_WORKER_ID: doud-ems-hindsight-worker-1
     volumes:
-      - hindsight-data:/home/hindsight/.pg0
-
-volumes:
-  hindsight-data:
+      # Persistance de la base pg0 dans ${APP_DATA_DIR} → couvert par les backups Umbrel.
+      # ⚠️ Le dossier doit appartenir à UID 1000 AVANT le 1er démarrage
+      # (voir hooks/pre-start, ou chown manuel en SSH).
+      - ${APP_DATA_DIR}/data/pg0:/home/hindsight/.pg0
