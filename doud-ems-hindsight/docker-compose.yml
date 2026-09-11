@@ -26,5 +26,7 @@ services:
       # restart et les tâches en cours deviennent orphelines — cf. doc officielle).
       HINDSIGHT_API_WORKER_ID: doud-ems-hindsight-worker-1
     volumes:
-      # Persistance de la base pg0 dans l'espace app-data Umbrel
-      - ${APP_DATA_DIR}/data/pg0:/home/hindsight/.pg0
+      - hindsight-data:/home/hindsight/.pg0
+
+volumes:
+  hindsight-data:
