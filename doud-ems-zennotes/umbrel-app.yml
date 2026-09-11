@@ -4,7 +4,7 @@ name: ZenNotes
 tagline: Keyboard-first Markdown notes with Vim motions
 icon: https://github.com/ZenNotes/zennotes/blob/main/apps/desktop/build/icon.png?raw=true
 category: Productivity
-version: "2.13.2"
+version: "2.43.0"
 port: 7878
 description: >-
   ZenNotes is a keyboard-first, Markdown-first notes app.
@@ -26,6 +26,21 @@ support: https://github.com/ZenNotes/zennotes/issues
 gallery:
   - https://zennotes.org/images/app.png
 releaseNotes: >-
+  ## v2.43.0 (2 septembre 2026)
+  - Amélioration de la détection des mises à jour pour les installations AUR
+    et tarball.
+  - ZenNotes lit désormais directement le flux des releases GitHub pour
+    détecter les nouvelles versions.
+  - L'application indique clairement si une mise à jour est disponible ou si
+    la version actuelle est déjà la dernière.
+  - Pour les installations gérées par un gestionnaire de paquets, ZenNotes
+    n'affiche plus de bouton d'installation afin d'éviter d'écraser les
+    fichiers gérés par le système.
+
+  Cette version conserve toutes les fonctionnalités précédentes : notes
+  Markdown locales, édition Vim, aperçu, tâches, bases de données et
+  intégration MCP.
+  
   ## v2.13.2 (14 juillet 2026)
   - Callouts style Obsidian avec menu d'insertion (`> [!type]`)
   - Style personnalisable pour les tâches complétées (strike, gris)
