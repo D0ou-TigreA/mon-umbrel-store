@@ -2,7 +2,7 @@ manifestVersion: 1
 id: doud-ems-hindsight
 name: Hindsight
 tagline: State-of-the-art memory for AI agents
-icon: https://hindsight.vectorize.io/img/logo.svg
+icon: https://hindsight.vectorize.io/img/icons/hindsight.png
 category: ai
 version: "latest"
 port: 9999
