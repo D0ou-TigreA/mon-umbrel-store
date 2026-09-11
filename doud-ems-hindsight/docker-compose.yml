@@ -17,6 +17,10 @@ services:
       # API exposée sur le LAN (l'UI 9999 passe déjà par app_proxy Umbrel)
       - "8888:8888"
     environment:
+      HINDSIGHT_API_LLM_PROVIDER: openai
+      HINDSIGHT_API_LLM_API_KEY: sk-ta-clé-openai
+      HINDSIGHT_API_LLM_MODEL: gpt-4o-mini
+      HINDSIGHT_API_WORKER_ID: doud-ems-hindsight-worker-1
       # ⚠️ Provider LLM non configuré pour l'instant.
       # À ajouter plus tard (HINDSIGHT_API_LLM_PROVIDER, HINDSIGHT_API_LLM_API_KEY,
       # HINDSIGHT_API_LLM_MODEL) — voir https://hindsight.vectorize.io/developer/models
