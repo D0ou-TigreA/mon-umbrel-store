@@ -4,7 +4,7 @@ name: ZenNotes
 tagline: Keyboard-first Markdown notes with Vim motions
 icon: https://github.com/ZenNotes/zennotes/blob/main/apps/desktop/build/icon.png?raw=true
 category: Productivity
-version: "2.56.0"
+version: "2.57.0"
 port: 7878
 description: >-
   ZenNotes is a keyboard-first, Markdown-first notes app.
@@ -26,12 +26,17 @@ support: https://github.com/ZenNotes/zennotes/issues
 gallery:
   - https://zennotes.org/images/app.png
 releaseNotes: >-
+  ## v2.57.0 (28 septembre 2026)
+  - Repli (fold) sur les listes, tâches et callouts (`zc`, `zo`, `zM`, `zR`)
+  - Callouts foldables style Obsidian (`> [!example]-` collapsed, `+` expanded)
+  - Split mode : synchronisation stable sur les notes math-heavy
+  - MCP agent suit le vault quand tu switches
+  - Corrections diverses (F3 find, cursor position, Atlas)
+  
   ## v2.56.0 (24 septembre 2026)
-  - Nouveaux raccourcis clavier pour templates (⌘⌥T sur macOS)
-  - Convertir une table Markdown en database (`:table_to_database`)
-  - Renommer un vault sans changer son dossier sur disque
-  - Refonte du Help intégré, recherche améliorée dans les Settings
-  - Corrections diverses (undo, tâches calendrier, code blocks dans tâches)
+  - Convertir table Markdown en database
+  - Renommer un vault sans changer le dossier
+  - Raccourci ⌘⌥T pour templates
   
   ## v2.43.0 (2 septembre 2026)
   - Amélioration de la détection des mises à jour pour les installations AUR
