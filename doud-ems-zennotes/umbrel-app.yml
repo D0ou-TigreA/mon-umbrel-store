@@ -4,7 +4,7 @@ name: ZenNotes
 tagline: Keyboard-first Markdown notes with Vim motions
 icon: https://github.com/ZenNotes/zennotes/blob/main/apps/desktop/build/icon.png?raw=true
 category: Productivity
-version: "2.57.0"
+version: "2.73.0"
 port: 7878
 description: >-
   ZenNotes is a keyboard-first, Markdown-first notes app.
@@ -26,6 +26,17 @@ support: https://github.com/ZenNotes/zennotes/issues
 gallery:
   - https://zennotes.org/images/app.png
 releaseNotes: >-
+  ## v2.73.0 (20 octobre 2026)
+  - La barre d'onglets peut servir à déplacer la fenêtre (titre bar désactivée)
+  - L'app web peut aussi masquer sa title bar
+  - Settings s'adapte aux écrans étroits et tablettes
+  - Vim `o`/`O` prolongent correctement une quote ou un callout
+  - CLI `zn` 0.9.1 (correctifs TUI)
+  
+  ## Versions v2.58 → v2.72 (octobre 2026)
+  - Nombreuses améliorations : Atlas, databases, MCP, Vim
+  - Historique complet : https://github.com/ZenNotes/zennotes/releases
+  
   ## v2.57.0 (28 septembre 2026)
   - Repli (fold) sur les listes, tâches et callouts (`zc`, `zo`, `zM`, `zR`)
   - Callouts foldables style Obsidian (`> [!example]-` collapsed, `+` expanded)
