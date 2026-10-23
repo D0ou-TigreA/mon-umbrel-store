@@ -5,6 +5,9 @@ services:
     environment:
       APP_HOST: doud-ems-zennotes_server_1
       APP_PORT: 7878
+      # On conserve le proxy Umbrel, mais NetBird et ZenNotes
+      # prennent en charge l'authentification.
+      PROXY_AUTH_ADD: "false"
 
   init:
     image: alpine:3.19
@@ -24,8 +27,29 @@ services:
       init:
         condition: service_completed_successfully
     environment:
+      # Token ZenNotes existant.
+      # Ne pas remplacer APP_SEED si tu veux conserver ton token actuel.
       ZENNOTES_AUTH_TOKEN: "${APP_SEED}"
+
+      # Réseau et chemins.
+      ZENNOTES_BIND: "0.0.0.0:7878"
+      ZENNOTES_CONFIG_PATH: "/data/server.json"
+      ZENNOTES_DEFAULT_VAULT_PATH: "/workspace"
       ZENNOTES_BROWSE_ROOTS: "/workspace"
+      
+      # Authentification et sessions.
+      ZENNOTES_ALLOW_INSECURE_NOAUTH: "0"
+      ZENNOTES_PERSIST_SESSIONS: "1"
+
+      # NetBird termine le HTTPS avant le serveur ZenNotes.
+      ZENNOTES_BEHIND_TLS: "1"
+
+      # Autorise l'application iOS native ZenNotes.
+      ZENNOTES_ALLOWED_ORIGINS: "capacitor://localhost"
+
+      # Réseaux du proxy NetBird et du proxy Docker Umbrel.
+      ZENNOTES_TRUSTED_PROXIES: "100.64.0.0/10,172.16.0.0/12"
+    
     volumes:
       - ${APP_DATA_DIR}/data/workspace:/workspace
       - ${APP_DATA_DIR}/data/server:/data
