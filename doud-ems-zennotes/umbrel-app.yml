@@ -14,9 +14,15 @@ description: >-
 
 
   ⚠️ On first connection, you will need to paste the auth token.
-  Retrieve it from the app's data folder on your Umbrel
-  (~/umbrel/app-data/doud-ems-zennotes/data/auth-token)
-  or from the docker-compose environment variable.
+  The token is APP_SEED, the per-app secret umbrelOS derives from its
+  installation seed and injects as ZENNOTES_AUTH_TOKEN. It is not
+  written to disk anywhere inside the app, so there is no
+  data/auth-token file to read. To read it on your Umbrel:
+
+  docker inspect doud-ems-zennotes_server_1 --format
+  '{{range .Config.Env}}{{println .}}{{end}}' | grep ZENNOTES_AUTH_TOKEN
+
+  It stays the same across app restarts and app updates.
 developer: ZenNotes (adibhanna)
 website: https://zennotes.org
 submitter: D0ou-TigreA
