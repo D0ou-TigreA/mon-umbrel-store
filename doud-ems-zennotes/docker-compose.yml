@@ -1,12 +1,8 @@
-version: "3.7"
-
 services:
   app_proxy:
     environment:
       APP_HOST: doud-ems-zennotes_server_1
       APP_PORT: 7878
-      # On conserve le proxy Umbrel, mais NetBird et ZenNotes
-      # prennent en charge l'authentification.
       PROXY_AUTH_ADD: "false"
 
   init:
@@ -19,7 +15,7 @@ services:
       - ${APP_DATA_DIR}/data/server:/data
 
   server:
-    image: adibhanna/zennotes:latest
+    image: adibhanna/zennotes:2.74.0
     restart: on-failure
     stop_grace_period: 1m
     user: "1000:1000"
@@ -41,12 +37,23 @@ services:
       ZENNOTES_ALLOW_INSECURE_NOAUTH: "0"
       ZENNOTES_PERSIST_SESSIONS: "1"
 
-      # NetBird termine le HTTPS avant le serveur ZenNotes.
-      ZENNOTES_BEHIND_TLS: "1"
+      # VARIANTE A (appliquée) : le canal Umbrel -> ZenNotes reste en HTTP
+      # clair, et l'accès distant NetBird vise ce même port en HTTP clair.
+      # ZENNOTES_BEHIND_TLS=1 marquait les cookies `Secure` (donc jetés par le
+      # navigateur en http://) et faisait calculer l'origine courante en
+      # https://, ce qui rejetait l'origine http://...:7878. Voir revue.md #2.
+      ZENNOTES_BEHIND_TLS: "0"
 
-      # Autorise l'application iOS native ZenNotes.
+      # Origines CORS autorisées, séparées par des virgules, littérales :
+      # schéma + hôte + port, sans slash final. L'app web servie depuis ce même
+      # port est en same-origin : elle n'a pas besoin d'être listée.
+      # `capacitor://localhost` = origine par défaut de la WebView Capacitor de
+      # l'app iOS native.
       ZENNOTES_ALLOWED_ORIGINS: "capacitor://localhost"
-    
+      # Exemple si un client WebView doit joindre le serveur par un autre nom
+      # (à décommenter ET à adapter à l'origine exacte rejetée dans les logs) :
+      # ZENNOTES_ALLOWED_ORIGINS: "capacitor://localhost,http://192.168.1.85:7878"
+
     volumes:
       - ${APP_DATA_DIR}/data/workspace:/workspace
       - ${APP_DATA_DIR}/data/server:/data
