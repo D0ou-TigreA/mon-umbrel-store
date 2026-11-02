@@ -1,1 +1,7 @@
-
+# Ce fichier existe uniquement pour que Git versionne le dossier de données.
+# Sans lui, `data/pg0/` n'existe pas après un clone, et le bind mount du
+# compose créerait le dossier à la place de Docker — en root, ce qui casserait
+# l'écriture par le conteneur (UID 1000).
+#
+# Ne rien stocker ici : c'est le dossier des données PostgreSQL embarquées
+# (pg0 + pgvector) et c'est CE dossier qui a atteint 106 Go avec l'ancien paquet.
