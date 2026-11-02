@@ -4,7 +4,7 @@ name: ZenNotes
 tagline: Keyboard-first Markdown notes with Vim motions
 icon: https://github.com/ZenNotes/zennotes/blob/main/apps/desktop/build/icon.png?raw=true
 category: Productivity
-version: "2.74.0"
+version: "2.81.0"
 port: 7878
 description: >-
   ZenNotes is a keyboard-first, Markdown-first notes app.
@@ -32,6 +32,12 @@ support: https://github.com/ZenNotes/zennotes/issues
 gallery:
   - https://zennotes.org/images/app.png
 releaseNotes: >-
+  ## v2.81.0 (2 novembre 2026)
+  - Tâches récurrentes (@repeat:daily/weekly/monthly...) et rappels
+  - Tableau Kanban par dossier, couleurs de colonnes
+  - Sélecteur de dossiers dans les Settings
+  - Corrections des listes à puces, dessins, affichage mobile
+  
   ## v2.74.0 (23 octobre 2026)
   - Mise à jour du serveur ZenNotes vers la version 2.74.0.
   - Support du reverse proxy NetBird avec terminaison TLS.
