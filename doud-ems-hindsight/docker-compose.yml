@@ -1,36 +1,206 @@
-version: "3.7"
+# Hindsight (Vectorize) — paquet umbrelOS 2.0 pour le community App Store
+# « Mon Store Umbrel_EMS » (id de store : doud-ems).
+#
+# Réécrit le 30/10/2026 (carte kanban t_7cbeec54, profil forge) pour remplacer
+# un paquet cassé : l'ancien compose déclarait DEUX FOIS la clé d'identité du
+# worker (celle définie en section « 1) IDENTITÉ DU WORKER » plus bas).
+# Un mapping dupliqué rend le YAML invalide ; umbreld
+# a alors refusé de lire l'app, donc de l'arrêter (`force-stop` → exit 1) et de
+# la désinstaller. La désinstallation a fini par libérer ~106 Go de disque.
+#
+# Règles tenues par ce fichier :
+#   - une seule occurrence de chaque clé, à tous les niveaux (vérifié à
+#     l'exécution par un parseur strict anti-doublons, cf. VALIDATION.md) ;
+#   - image épinglée : tag de release + digest multi-arch (amd64/arm64) ;
+#   - aucune valeur secrète en clair ;
+#   - tous les volumes sous ${APP_DATA_DIR}.
+#
+# Ce qui N'EST PAS dans ce fichier, volontairement :
+#   - pas de clé `version:` (obsolète, Compose émet un avertissement) ;
+#   - pas de `user:` sur `server` : l'image ne définit QUE l'utilisateur
+#     `hindsight` (UID 1000) et la doc upstream prévient qu'un autre UID casse
+#     le démarrage (`KeyError: 'getpwuid(): uid not found'`). On laisse donc
+#     l'image tourner en 1000, et c'est le service `init` (root) qui aligne le
+#     dossier de données sur 1000:1000 — voir plus bas « Permissions » ;
+#   - pas de `healthcheck:` : /health existe côté API, mais je n'ai pas pu
+#     vérifier s'il exige le jeton d'API une fois l'extension d'auth active.
+#     Un healthcheck qui passe « unhealthy » en permanence serait pire que pas
+#     de healthcheck (umbrelOS ne redémarre pas sur « unhealthy »).
 
 services:
+  # Umbrel : ce service n'existe pas comme conteneur en 2.0. umbrelOS lit
+  # APP_HOST/APP_PORT pour router le port public du manifeste (9999) vers le
+  # Control Plane à l'intérieur du conteneur.
   app_proxy:
     environment:
-      # Format Umbrel : <app-id>_<service>_1
       APP_HOST: doud-ems-hindsight_server_1
-      APP_PORT: 9999   # Control Plane (Web UI)
+      APP_PORT: 9999
+
+  # ---------------------------------------------------------------------------
+  # Permissions — QUI fait le chown (réponse explicite, corrigée le 30/10/2026,
+  # carte t_87163b91).
+  #
+  # Fait : l'image `server` tourne en UID 1000 (`hindsight`), et la donnée est
+  # un bind mount d'un dossier de l'hôte (`${APP_DATA_DIR}/data/pg0`). Un bind
+  # mount d'hôte GARDE l'ownership de l'hôte : Docker ne le « donne » pas au
+  # conteneur (contrairement à un volume nommé, créé avec le bon propriétaire).
+  #
+  # Source : doc upstream Hindsight, `docs/developer/installation.md`
+  # (§ « Persisting data: named volume vs. host bind mount »), relevée le
+  # 30/10/2026 — « If you instead bind-mount a host directory … that directory
+  # must be owned by UID 1000, or the embedded database fails to start with
+  # Permission denied ». La doc liste elle-même `chown -R 1000:1000` comme
+  # pré-requis, et interdit de contourner par `--user`.
+  #
+  # Ce que je N'AI PAS pu établir : aucune source ne documente un chown de
+  # `${APP_DATA_DIR}` (ni de `storage.dataRoot`) par umbrelOS 2.0. Je ne peux
+  # donc pas affirmer que le dossier arrive en 1000:1000 — et l'expérience
+  # locale le contredit : ZenNotes a eu besoin d'un service `init` de chown
+  # sur cette machine (cf. zennotes/config-corrigee/docker-compose.yml).
+  #
+  # Donc : c'est CE service `init` qui fait le chown, pas Édouard en SSH.
+  # - `user: "0:0"` : chown exige root ;
+  # - `restart: "no"` : one-shot, il doit se terminer pour débloquer `server` ;
+  # - `depends_on: service_completed_successfully` côté `server` : le serveur
+  #   ne démarre que si le chown a réussi (sinon on retombe sur un
+  #   « permission denied » au boot de PostgreSQL) ;
+  # - `-R` : nécessaire pour réparer une installation existante dont les
+  #   fichiers appartiennent déjà à root ; sur un dossier neuf c'est immédiat.
+  #   Coût à connaître : le chown rejoue à CHAQUE démarrage de l'app, sur tout
+  #   le dossier de données. Sur ~9 Go (et des dizaines de milliers de
+  #   fichiers) c'est de l'ordre de la seconde ; sur une base pathologique de
+  #   106 Go, compter plus longtemps. C'est le prix de l'absence de chown en
+  #   SSH, choix assumé.
+  #
+  # `alpine:3.19` n'est pas épinglé par digest (contrairement à `server`) :
+  # c'est une image utilitaire de 3 Mo qui ne fait qu'un `mkdir`+`chown`, et
+  # c'est exactement ce que fait la référence ZenNotes sur la même machine.
+  # ---------------------------------------------------------------------------
+  init:
+    image: alpine:3.19
+    user: "0:0"
+    command: sh -c "mkdir -p /data && chown -R 1000:1000 /data"
+    restart: "no"
+    volumes:
+      - ${APP_DATA_DIR}/data/pg0:/data
 
   server:
-    image: ghcr.io/vectorize-io/hindsight:latest
-    restart: on-failure
-    shm_size: "1gb"
-    user: "1000:1000"
+    # Image officielle « Full » (embedder BGE + reranker MiniLM embarqués).
+    # Tag = version de release upstream v1.1.0 (21/10/2026) et digest de
+    # l'index multi-arch relevé le 30/10/2026 sur ghcr.io. Les deux ensemble :
+    # le tag reste lisible pour un humain, le digest empêche une dérive
+    # silencieuse (l'ancien paquet utilisait `latest`).
+    image: ghcr.io/vectorize-io/hindsight:1.1.0@sha256:50311d02b4d5d2b7c5242bd336edf8735df8374eaad496a92f49c83b37d2aa06
+
+    # `unless-stopped` : l'app redémarre après un crash ou un reboot, mais
+    # reste arrêtée si Édouard l'arrête depuis l'UI (contrairement à `always`).
+    restart: unless-stopped
+
+    # Le chown du dossier de données doit avoir réussi AVANT le démarrage de
+    # PostgreSQL embarqué. `service_completed_successfully` (et pas
+    # `service_started`) : si `init` échoue, le serveur ne démarre pas — on
+    # préfère un échec visible à une boucle « permission denied ».
+    depends_on:
+      init:
+        condition: service_completed_successfully
+
+    # La doc upstream demande jusqu'à 60 s au worker pour rendre ses tâches en
+    # cours ; Docker tue à 10 s par défaut. 75 s = la valeur de la doc.
+    stop_grace_period: 75s
+
+    # PID 1 correct (le conteneur lance un superviseur bash, cf. start-all.sh).
     init: true
+
+    # Recommandé par la doc upstream : PostgreSQL embarqué + modèles locaux
+    # utilisent /dev/shm (défaut Docker : 64 Mo, insuffisant).
+    shm_size: "1gb"
+
+    # SEUL port publié sur l'hôte : l'API HTTP (REST + MCP `/mcp/{bank_id}`).
+    # Il doit être joignable par un client hors réseau Docker (agents Hermes,
+    # clients MCP du LAN), ce qu'`app_proxy` ne sait pas faire : app_proxy ne
+    # route que le Control Plane (9999). L'UI web n'est pas publiée en direct :
+    # elle passe par l'ingress umbrelOS et le login Umbrel.
+    # L'API est protégée par la clé dérivée APP_SEED (voir plus bas).
     ports:
-      # API exposée sur le LAN (l'UI 9999 passe déjà par app_proxy Umbrel)
       - "8888:8888"
+
     environment:
-      HINDSIGHT_API_LLM_PROVIDER: openai
-      HINDSIGHT_API_LLM_API_KEY: TA_CLÉ_INFOMANIAK
-      HINDSIGHT_API_LLM_BASE_URL: https://api.infomaniak.com/2/ai/PRODUCT_ID/openai/v1
-      HINDSIGHT_API_LLM_MODEL: qwen3
-      HINDSIGHT_API_WORKER_ID: doud-ems-hindsight-worker-1
-      # ⚠️ Provider LLM non configuré pour l'instant.
-      # À ajouter plus tard (HINDSIGHT_API_LLM_PROVIDER, HINDSIGHT_API_LLM_API_KEY,
-      # HINDSIGHT_API_LLM_MODEL) — voir https://hindsight.vectorize.io/developer/models
+      # ---------------------------------------------------------------------
+      # 1) IDENTITÉ DU WORKER — clé la plus sensible du fichier.
       #
-      # Identité stable du worker (sinon Docker attribue un ID aléatoire à chaque
-      # restart et les tâches en cours deviennent orphelines — cf. doc officielle).
-      HINDSIGHT_API_WORKER_ID: doud-ems-hindsight-worker-1
+      # À quoi elle sert : chaque processus qui traite des tâches (retain,
+      # consolidation, refresh des mental models) s'annonce en base sous un
+      # identifiant de worker. Une tâche réclamée est marquée « owned by
+      # <worker_id> ». Par défaut Hindsight prend le hostname du conteneur,
+      # c'est-à-dire l'ID du conteneur Docker, qui CHANGE à chaque
+      # recréation : les tâches réclamées avant l'arrêt restent alors
+      # orphelines sous un identifiant que plus personne ne porte, et
+      # s'empilent indéfiniment.
+      #
+      # Pourquoi une valeur FIXE : elle doit être la même à chaque démarrage,
+      # sinon le worker ne reconnaît pas ses propres tâches en attente.
+      #
+      # Ce qui casse si elle est dupliquée : le document devient un YAML
+      # invalide (`duplicated mapping key`). umbreld n'arrive plus à lire le
+      # compose, donc l'app ne peut plus être ni arrêtée ni désinstallée, et
+      # deux travailleurs concurrents peuvent se disputer les mêmes tâches.
+      # C'est exactement la panne du paquet précédent.
+      #
+      # Donc : UNE seule ligne, ici, et nulle part ailleurs dans ce fichier.
+      # ---------------------------------------------------------------------
+      HINDSIGHT_API_WORKER_ID: "doud-ems-hindsight-worker-1"
+
+      # ---------------------------------------------------------------------
+      # 2) LLM — extraction de faits, réflexion, consolidation.
+      #
+      # Aucune clé n'est écrite ici : les quatre variables sont lues depuis
+      # l'environnement de l'app, que Édouard renseigne après installation
+      # (Apps → Hindsight → Settings → Environment, cf. README).
+      #
+      # Mode dégradé volontaire : sans clé, le provider vaut « none ».
+      # Comportement documenté par upstream : le serveur démarre, retain
+      # stocke des chunks sans extraction de faits, recall fonctionne,
+      # reflect renvoie HTTP 400, consolidation désactivée. Pas de crash
+      # silencieux : c'est un mode supporté, pas une panne.
+      # ---------------------------------------------------------------------
+      HINDSIGHT_API_LLM_PROVIDER: "${HINDSIGHT_API_LLM_PROVIDER:-none}"
+      HINDSIGHT_API_LLM_API_KEY: "${HINDSIGHT_API_LLM_API_KEY:-}"
+      HINDSIGHT_API_LLM_MODEL: "${HINDSIGHT_API_LLM_MODEL:-gpt-5-mini}"
+      HINDSIGHT_API_LLM_BASE_URL: "${HINDSIGHT_API_LLM_BASE_URL:-}"
+
+      # ---------------------------------------------------------------------
+      # 3) AUTHENTIFICATION — l'API publiée sur 8888 ne doit pas être ouverte.
+      #
+      # L'extension d'auth builtin exige `Authorization: Bearer <clé>` sur
+      # toutes les routes (REST et MCP). Sans elle, n'importe qui sur le LAN
+      # peut lire et écrire la mémoire des agents.
+      #
+      # La clé est APP_SEED, le secret dérivé par umbrelOS pour cette app
+      # (HMAC-SHA256 du seed de l'installation) : stable entre redémarrages
+      # et mises à jour, jamais écrite sur disque, jamais dans ce dépôt.
+      # C'est la même valeur dans les deux emplacements ci-dessous parce que
+      # c'est UN seul secret applicatif (la clé de l'API), consommé par le
+      # serveur et par le Control Plane — pas deux secrets distincts.
+      # ---------------------------------------------------------------------
+      HINDSIGHT_API_TENANT_EXTENSION: "hindsight_api.extensions.builtin.tenant:ApiKeyTenantExtension"
+      HINDSIGHT_API_TENANT_API_KEY: "${APP_SEED}"
+      HINDSIGHT_CP_DATAPLANE_API_KEY: "${APP_SEED}"
+      # HINDSIGHT_CP_DATAPLANE_API_URL n'est pas redéfini : l'image le fixe
+      # déjà à http://localhost:8888, et le Control Plane appelle l'API
+      # côté serveur (routes Next.js), donc « localhost » est correct.
+
     volumes:
-      # Persistance de la base pg0 dans ${APP_DATA_DIR} → couvert par les backups Umbrel.
-      # ⚠️ Le dossier doit appartenir à UID 1000 AVANT le 1er démarrage
-      # (voir hooks/pre-start, ou chown manuel en SSH).
+      # Toute la donnée de l'app : PostgreSQL embarqué (pg0) + pgvector +
+      # extensions. C'est CE dossier qui a grossi jusqu'à 106 Go ; il est
+      # désormais le seul état persistant, sauvegardé par umbrelOS.
+      # Le conteneur tourne en UID 1000 : l'ownership du dossier de l'hôte est
+      # aligné par le service `init` ci-dessus (1000:1000), à chaque démarrage.
       - ${APP_DATA_DIR}/data/pg0:/home/hindsight/.pg0
+
+    # Garde-fou disque : sans plafond, un log bavard (ou une boucle de crash)
+    # remplit le disque sans limite. 10 Mo × 3 fichiers maximum.
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
