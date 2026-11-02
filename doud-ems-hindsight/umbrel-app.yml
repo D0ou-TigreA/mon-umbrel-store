@@ -1,42 +1,129 @@
+# Manifeste d'app umbrelOS 2.0 — Hindsight (Vectorize)
+# Carte kanban t_7cbeec54. Ordre des champs = ordre canonique de la doc de
+# packaging officielle (getumbrel/umbrel-apps, .agents/skills/umbrel-package-app).
 manifestVersion: 1
+
 id: doud-ems-hindsight
-name: Hindsight
-tagline: State-of-the-art memory for AI agents
-icon: https://hindsight.vectorize.io/img/icons/hindsight.png
+
+# umbrelOS 2.0 : le dossier de données racine est déclaré ici et monté dans
+# le compose via ${APP_DATA_DIR}/data. Ne pas le retirer — sur 2.0, umbreld
+# exige ce champ pour placer l'état de l'app dans son dossier de sauvegarde.
+storage:
+  dataRoot: data
+
 category: ai
-version: "latest"
-port: 9999
+
+name: Hindsight
+
+# Version = version de release upstream (v1.1.0, 21/10/2026) et version du tag
+# d'image. Jamais « latest » : umbrelOS s'en sert pour détecter les mises à
+# jour, et « latest » rend l'installation non reproductible.
+version: "1.1.0"
+
+tagline: Mémoire long terme pour agents IA — API, Control Plane et MCP
+
 description: >-
-  Hindsight is a memory system for AI agents. It stores, consolidates and
-  retrieves knowledge across sessions using multi-strategy retrieval (semantic,
-  keyword, graph, temporal) and observation consolidation.
+  Hindsight donne une mémoire persistante à vos agents : il extrait des faits
+  des conversations, les consolide et les restitue par recherche sémantique.
 
 
-  This deployment uses the official all-in-one image
-  `ghcr.io/vectorize-io/hindsight`, which bundles:
+  Trois surfaces dans une seule app :
 
-  - The API server (port 8888)
+  • Control Plane (cette interface web, port 9999) pour créer et inspecter les
+  banques de mémoire ;
 
-  - The Control Plane / Web UI (port 9999) — what this tile opens
+  • API HTTP sur le port 8888 (REST + MCP sur /mcp/{bank_id}) pour brancher
+  Hermes, Claude, Cursor ou n'importe quel client MCP ;
 
-  - An embedded PostgreSQL (pg0) with pgvector, stored in the app data dir
+  • PostgreSQL embarqué (pg0 + pgvector) dans le dossier de données de l'app.
 
 
-  ℹ️ LLM provider not configured yet. To enable fact extraction / reflection,
-  add `HINDSIGHT_API_LLM_PROVIDER`, `HINDSIGHT_API_LLM_API_KEY` and
-  `HINDSIGHT_API_LLM_MODEL` to the app's docker-compose.yml.
+  Au premier lancement, aucune clé LLM n'est configurée : l'app démarre en mode
+  dégradé (stockage de chunks, recherche fonctionnelle, extraction de faits et
+  réflexion désactivées). Pour activer l'extraction de faits, renseignez
+  HINDSIGHT_API_LLM_API_KEY (et éventuellement PROVIDER / MODEL / BASE_URL) dans
+  les réglages d'environnement de l'app, puis redémarrez-la.
+
+
+  L'API est protégée par une clé dérivée de l'installation ; la commande pour la
+  lire est dans le README du dépôt.
+
+releaseNotes: ""
+
 developer: Vectorize
+
 website: https://hindsight.vectorize.io
-submitter: Edouard MIELS
-submission: https://github.com/D0ou-TigreA/mon-umbrel-store
-repo: https://github.com/vectorize-io/hindsight
-support: https://hindsight.vectorize.io/
-gallery:
-  - https://hindsight.vectorize.io/img/logo.png
-releaseNotes: >-
-  Initial release: Hindsight all-in-one deployment (API 8888 + UI 9999 +
-  embedded PostgreSQL). Requires a LLM API key configured in the compose file.
+
+# Aucune dépendance : l'app est autonome (base PostgreSQL embarquée), elle ne
+# requiert ni Bitcoin ni une autre app du store.
 dependencies: []
+
+repo: https://github.com/vectorize-io/hindsight
+support: https://github.com/vectorize-io/hindsight/issues
+
+# Port public de l'app (ingress umbrelOS → app_proxy → Control Plane :9999).
+# 9999 était déjà le port de Hindsight avant sa désinstallation : il est libre.
+# Vérifié non conflictuel avec les autres apps de ce store : anythingllm=3001,
+# zennotes=7878. Le port 8888 (API/MCP) est publié directement par le compose,
+# hors ingress : il n'apparaît donc pas ici — un manifeste umbrel n'accepte
+# qu'un seul port public.
+port: 9999
+
+# Icône : favicon officiel du dépôt upstream, épinglé sur le tag v1.1.0
+# (URL testée le 30/10/2026 : HTTP 200, image/png, 27 038 octets).
+icon: https://raw.githubusercontent.com/vectorize-io/hindsight/v1.1.0/hindsight-favicon.png
+
+# Pas de capture d'écran livrée avec ce paquet : la galerie du store attend des
+# fichiers versionnés dans le dossier de l'app. Vide plutôt qu'une URL non
+# vérifiée (une image manquante casse l'affichage de la fiche).
+gallery: []
+
 path: ""
+
+# Pas d'identifiants par défaut : l'API est protégée par la clé dérivée
+# APP_SEED, lue via docker inspect (cf. README). Aucun mot de passe en clair
+# dans ce dépôt.
 defaultUsername: ""
 defaultPassword: ""
+
+# Renseignés après installation, depuis les réglages d'environnement de l'app.
+# Aucune valeur secrète ici : seulement des défauts affichés à l'utilisateur.
+# Le défaut RÉEL est appliqué par le compose (${VAR:-défaut}).
+environment:
+  - name: HINDSIGHT_API_LLM_PROVIDER
+    services:
+      - server
+    default: "none"
+    note: >-
+      Fournisseur LLM (openai, anthropic, groq, mistral, gemini, ollama,
+      openrouter, azure, ...). « none » = mode dégradé sans clé : l'app
+      démarre, stocke et recherche, mais n'extrait pas de faits.
+
+  - name: HINDSIGHT_API_LLM_API_KEY
+    services:
+      - server
+    note: >-
+      Clé API du fournisseur LLM. Obligatoire pour l'extraction de faits.
+      Laisser vide pour rester en mode dégradé.
+
+  - name: HINDSIGHT_API_LLM_MODEL
+    services:
+      - server
+    default: gpt-5-mini
+    note: >-
+      Modèle utilisé pour l'extraction de faits et la réflexion. Doit exister
+      chez le fournisseur choisi (ex. deepseek-v3, claude-sonnet-4-5).
+
+  - name: HINDSIGHT_API_LLM_BASE_URL
+    services:
+      - server
+    note: >-
+      Facultatif. À renseigner uniquement pour un endpoint compatible OpenAI
+      non standard (passerelle d'entreprise, vLLM, LiteLLM...). Vide = URL par
+      défaut du fournisseur.
+
+submitter: Edouard MIELS
+
+# Dépôt qui héberge ce paquet (community App Store). umbrelOS s'en sert pour
+# détecter les mises à jour du store.
+submission: https://github.com/D0ou-TigreA/mon-umbrel-store
