@@ -6,9 +6,10 @@ services:
       # Format : <app-id>_<service>_1
       APP_HOST: doud-ems-opengym_web_1
       APP_PORT: 80
-      # openGym a sa propre authentification (passkeys) et l'app iOS
-      # ne peut pas envoyer le cookie de connexion Umbrel.
-      PROXY_AUTH_ADD: "false"
+      # L'interface web reste protégée par la connexion Umbrel.
+      # L'API est ouverte pour l'app iOS (qui ne peut pas envoyer le cookie Umbrel) ;
+      # elle reste protégée par l'authentification propre d'openGym.
+      PROXY_AUTH_WHITELIST: "/api/*"
 
   api:
     image: ghcr.io/duartesantos8/opengym-api:1.4.5
@@ -19,13 +20,19 @@ services:
       DATA_DIR: /data
       TRUST_PROXY: 1
 
-      # >>> À ADAPTER AVANT LE PREMIER PROFIL <<<
-      RP_ID: umbrel-nom.tailxxxxx.ts.net
-      ORIGIN: https://umbrel-nom.tailxxxxx.ts.net
+      # >>> À VÉRIFIER AVANT LE PREMIER PROFIL <<<
+      # Doit correspondre EXACTEMENT à l'adresse ouverte dans le navigateur et dans l'app iOS.
+      # Si tu as renommé ton Umbrel, remplace umbrel.local par ton hostname.
+      RP_ID: umbrel.local
+      ORIGIN: https://umbrel.local:4580
       RP_NAME: openGym
 
       FIRST_USER_ADMIN: 1
       DEFAULT_LANG: fr
+
+      # Connexion par mot de passe en secours si les passkeys refusent umbrel.local.
+      # Repasse à 0 une fois une passkey ajoutée à ton profil, si tu le souhaites.
+      PASSWORD_LOGIN: 1
 
       # Une fois ton profil créé, passe à 1 pour fermer les inscriptions
       INVITE_ONLY: 0
@@ -41,7 +48,7 @@ services:
     environment:
       NGINX_PORT: 80
       # Nom du conteneur API injecté par Umbrel
-      BACKEND: edouard-opengym_api_1
+      BACKEND: doud-ems-opengym_api_1
       PORT: 3000
       RESOLVER: 127.0.0.11
       MEDIA_UPLOAD_MAX: 112m
