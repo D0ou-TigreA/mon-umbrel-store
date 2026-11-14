@@ -1,20 +1,15 @@
-manifestVersion: 1
-id: doud-ems-hindsight
+manifestVersion: 2.0
+id: doud-ems-opengym
 category: health
 name: openGym
 version: "1.4.5"
 tagline: Tracker de musculation open source, sans pub ni abonnement
-icon: https://raw.githubusercontent.com/GITHUB_USER/umbrel-community-app-store/main/edouard-opengym/icon.png
+icon: https://raw.githubusercontent.com/GITHUB_USER/GITHUB_REPO/main/doud-ems-opengym/icon.png
 description: >-
-  ⚠️ Avant de créer ton premier profil, configure RP_ID et ORIGIN dans
-  docker-compose.yml avec l'adresse HTTPS exacte utilisée pour ouvrir openGym
-  (par exemple ton nom Tailscale en .ts.net). Les passkeys sont liées à ce nom.
-
-
   openGym permet de planifier des routines, d'enregistrer ses séances, de suivre
   les muscles travaillés et d'importer ses données depuis Strong, Hevy ou FitNotes.
-  L'application iOS peut se connecter à ce serveur et synchroniser les séances.
-
+  L'app iOS fonctionne hors ligne et se synchronise avec ce serveur dès qu'il est
+  joignable sur le réseau local.
 
   Le premier profil créé devient administrateur.
 releaseNotes: ""
@@ -24,9 +19,10 @@ dependencies: []
 repo: https://github.com/DuarteSantos8/openGym
 support: https://github.com/DuarteSantos8/openGym/issues
 port: 4580
+requiresHttps: true
 gallery: []
 path: ""
 defaultUsername: ""
 defaultPassword: ""
 submitter: Edouard Miels
-submission: https://github.com/GITHUB_USER/umbrel-community-app-store
+submission: https://github.com/GITHUB_USER/GITHUB_REPO
