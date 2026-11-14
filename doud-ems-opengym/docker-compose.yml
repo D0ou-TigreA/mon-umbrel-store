@@ -20,10 +20,11 @@ services:
       DATA_DIR: /data
       TRUST_PROXY: 1
 
-      # Valeurs par défaut, calculées à partir du nom de l'Umbrel (ex. umbrel.local).
-      # Modifiables dans Umbrel > openGym > Settings (umbrelOS 2.0).
-      RP_ID: ${DEVICE_DOMAIN_NAME}
-      ORIGIN: https://${DEVICE_DOMAIN_NAME}:4580
+      # >>> À VÉRIFIER AVANT LE PREMIER PROFIL <<<
+      # Doit correspondre EXACTEMENT à l'adresse ouverte dans le navigateur et dans l'app iOS.
+      # Si tu as renommé ton Umbrel, remplace umbrel.local par ton hostname.
+      RP_ID: umbrel.local
+      ORIGIN: https://umbrel.local:4580
       RP_NAME: openGym
 
       FIRST_USER_ADMIN: 1
