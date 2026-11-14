@@ -18,24 +18,22 @@ services:
     environment:
       PORT: 3000
       DATA_DIR: /data
-      TRUST_PROXY: 1
+      TRUST_PROXY: "1"
 
-      # >>> À VÉRIFIER AVANT LE PREMIER PROFIL <<<
-      # Doit correspondre EXACTEMENT à l'adresse ouverte dans le navigateur et dans l'app iOS.
-      # Si tu as renommé ton Umbrel, remplace umbrel.local par ton hostname.
-      RP_ID: umbrel.local
-      ORIGIN: https://umbrel.local:4580
+      # Valeurs par défaut, calculées à partir du nom de l'Umbrel (ex. umbrel.local).
+      # Modifiables dans Umbrel > openGym > Settings (umbrelOS 2.0).
+      RP_ID: ${DEVICE_DOMAIN_NAME}
+      ORIGIN: https://${DEVICE_DOMAIN_NAME}:4580
       RP_NAME: openGym
 
-      FIRST_USER_ADMIN: 1
+      FIRST_USER_ADMIN: "1"
       DEFAULT_LANG: fr
 
       # Connexion par mot de passe en secours si les passkeys refusent umbrel.local.
-      # Repasse à 0 une fois une passkey ajoutée à ton profil, si tu le souhaites.
-      PASSWORD_LOGIN: 1
+      # Pour la désactiver plus tard, supprime cette ligne (après avoir ajouté une passkey à ton profil).
+      PASSWORD_LOGIN: "1"
 
-      # Une fois ton profil créé, passe à 1 pour fermer les inscriptions
-      INVITE_ONLY: 0
+      # INVITE_ONLY : à activer depuis Umbrel > openGym > Settings, après création du profil
     volumes:
       - ${APP_DATA_DIR}/data/api:/data
       - ${APP_DATA_DIR}/data/coach-auth:/coach-auth
