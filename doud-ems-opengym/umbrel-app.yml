@@ -1,14 +1,34 @@
 manifestVersion: 2.0
 id: doud-ems-opengym
+storage:
+  dataRoot: data
+environment:
+  - name: RP_ID
+    services:
+      - api
+    default: umbrel.local
+    note: Nom d'hôte seul, sans https:// ni port (par défaut, le nom local de ton Umbrel). Doit être celui de l'adresse utilisée pour ouvrir openGym. Le changer invalide les passkeys existantes.
+  - name: ORIGIN
+    services:
+      - api
+    default: https://umbrel.local:4580
+    note: Adresse complète utilisée pour ouvrir openGym (https://, nom d'hôte et port), sans slash final. Son nom d'hôte doit être identique à RP_ID.
+  - name: INVITE_ONLY
+    services:
+      - api
+    options:
+      - "1"
+    note: Choisis 1 APRÈS avoir créé ton profil pour fermer les inscriptions. Laisse vide tant que tu n'as pas de profil.
 category: health
 name: openGym
 version: "1.4.5"
 tagline: Tracker de musculation open source, sans pub ni abonnement
 icon: https://raw.githubusercontent.com/GITHUB_USER/GITHUB_REPO/main/doud-ems-opengym/icon.png
 description: >-
-  ⚠️ Avant de créer ton premier profil, vérifie RP_ID et ORIGIN dans
-  docker-compose.yml : ils doivent correspondre exactement à l'adresse HTTPS
-  utilisée pour ouvrir openGym (par défaut https://umbrel.local:4580).
+  ⚠️ Avant de créer ton premier profil, vérifie RP_ID et ORIGIN dans les
+  réglages de l'app (Umbrel > openGym > Settings). Ils doivent correspondre
+  exactement à l'adresse HTTPS utilisée pour ouvrir openGym
+  (par défaut https://<nom-de-ton-umbrel>.local:4580).
 
 
   openGym permet de planifier des routines, d'enregistrer ses séances, de suivre
