@@ -1,6 +1,20 @@
 manifestVersion: 2.0
 id: doud-ems-opengym
-category: health
+manifestVersion: 2.0
+id: doud-ems-opengym
+storage:
+  dataRoot: data
+environment:
+  - name: RP_ID
+    services:
+      - api
+    default: umbrel.local
+    note: Nom d'hôte seul, sans https:// ni port. Doit correspondre à l'adresse utilisée pour ouvrir openGym. Ne le change pas après avoir créé des passkeys.
+  - name: ORIGIN
+    services:
+      - api
+    default: https://umbrel.local:4580
+    note: Adresse complète utilisée pour ouvrir openGym (https://, nom d'hôte et port), sans slash final. Le nom d'hôte doit être identique à RP_ID.
 name: openGym
 version: "1.4.5"
 tagline: Tracker de musculation open source, sans pub ni abonnement
