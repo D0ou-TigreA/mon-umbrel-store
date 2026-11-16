@@ -1,31 +1,33 @@
-version: '3'
+version: '3.7'
  
 services:
   gladys:
-    image: gladysassistant/gladys:v4.48.0@sha256:536b970e67911effbc6f8ce7596c6b044630f24cc79706e05aa1b89f0ae665dd
-    container_name: gladys
+    image: gladysassistant/gladys:v5.3.3@sha256:d431b35a5aea40e74fd9e66621e70adc538fd40e993290acf8629ccc9780fc6e
     restart: on-failure
-    privileged: true
+    stop_grace_period: 1m
+
+    # Gladys needs host networking for LAN discovery, multicast and mDNS.
     network_mode: host
+
+    # Required by Gladys hardware integrations such as USB, Bluetooth and Matter.
+    privileged: true
     cgroup: host
+
     logging:
-      driver: "json-file"
+      driver: json-file
       options:
         max-size: 10m
+        max-file: "3"
+
     environment:
       NODE_ENV: production
       SQLITE_FILE_PATH: /var/lib/gladysassistant/gladys-production.db
       SERVER_PORT: 9212
-      TZ: Europe/Berlin
+      TZ: Europe/Paris
+
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /var/lib/gladysassistant:/var/lib/gladysassistant
+      - ${APP_DATA_DIR}/data/gladys:/var/lib/gladysassistant:rw
       - /dev:/dev
       - /run/udev:/run/udev:ro
-  watchtower:
-    image: containrrr/watchtower
-    restart: on-failure
-    container_name: watchtower
-    command: --cleanup --include-restarting
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      # Required for Bluetooth and Matter BLE pairing.
+      - /run/dbus:/run/dbus:ro
