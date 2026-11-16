@@ -1,38 +1,53 @@
 manifestVersion: 1
 id: doud-ems-gladys
+storage:
+  dataRoot: data
+category: automation
 name: Gladys Assistant
-tagline: An intelligent, privacy-first solution for seamless smart home automation
-icon: 
-category: Home & Automation
-version: "4.48.0"
-port: 9212
+version: "5.3.3"
+tagline: Privacy-first home automation for your Umbrel
+
 description: >-
-  🏠 Gladys Assistant is a feature-rich, open-source home automation platform designed to make managing and controlling smart home devices simple, secure, and highly customizable. Whether you're new to home automation or an advanced user, Gladys offers a comprehensive solution that centralizes the control of various IoT devices, allowing you to create a fully automated and personalized smart home experience.
+  Gladys Assistant is an open-source, privacy-first home automation platform
+  that brings your smart-home devices, scenes, dashboards and integrations
+  together in one interface.
 
 
-  One of the core strengths of Gladys Assistant is its ability to integrate with a wide variety of smart home products and services, from lights, thermostats, and security cameras to energy monitors and motion detectors. This compatibility enables you to bring all your devices together under one platform, eliminating the need to juggle multiple apps or systems. You can easily manage everything from a user-friendly dashboard, available on desktop or mobile, giving you real-time control and insights into your home’s status.
+  Gladys supports a wide range of local and cloud integrations, including
+  MQTT, Zigbee2MQTT, Matter, Bluetooth, cameras, energy monitoring, calendars,
+  weather services and voice assistants.
 
 
-  At the heart of Gladys Assistant is its powerful automation engine. It allows you to set up custom routines and automations that respond to specific triggers, such as adjusting your thermostat based on the weather, turning off appliances when you leave home, or receiving instant alerts when motion is detected in certain areas. These automations can be tailored to your specific needs, helping you create a smarter, more efficient home environment.
+  **First launch:** open Gladys from the Umbrel home screen and follow the
+  browser-based setup flow to create your local account and configure your
+  house.
 
 
-  A key benefit of Gladys Assistant is its emphasis on privacy and self-hosting. Unlike many other smart home platforms that rely on cloud services, Gladys can be hosted on your own server or devices like a Raspberry Pi, ensuring that all your data stays within your own network and remains private. You have full control over your data, with no third-party access, making it a perfect choice for those who value security and privacy in their home automation systems.
+  **Umbrel note:** the package deliberately does not mount Umbrel's Docker
+  socket and does not run Watchtower. Umbrel manages the app lifecycle and
+  updates. Gladys features that specifically require control of the Docker
+  daemon are therefore not available in this package; the web interface and
+  hardware/network integrations remain the intended use case.
 
-
-  Additionally, Gladys Assistant supports popular voice assistants such as Google Assistant and Amazon Alexa, enabling hands-free voice control of your smart home. You can easily command your devices through simple voice commands, adding even more convenience to your everyday life.
-
-
-  Gladys Assistant also has an active community of developers and users who continually contribute to its development. This means that new features, integrations, and updates are regularly added, keeping the platform current with the latest smart home technologies. Whether you're automating your lights, managing home security, or optimizing your energy usage, Gladys Assistant offers a powerful, flexible, and privacy-focused solution for building your ideal smart home.
-  
 developer: Pierre-Gilles Leymarie
 website: https://gladysassistant.com/
-submitter: doud-ems
-submission: https://github.com/getumbrel/umbrel-apps/pull/
+dependencies: []
 repo: https://github.com/GladysAssistant/Gladys
 support: https://github.com/GladysAssistant/Gladys/issues
-releaseNotes: >-
-  The new version v4.48.0 of Gladys Assistant brings several improvements, including cleaning the DuckDB schema during restoration and properly closing all connections on database shutdown. New features include AI interaction within scenes and support for TCP transport for RTSP camera streams.
-dependencies:
+
+port: 9212
+gallery: []
 path: ""
+
+icon: https://raw.githubusercontent.com/GladysAssistant/Gladys/master/front/src/assets/icons/android-icon-512x512.png
 defaultUsername: ""
 defaultPassword: ""
+
+submitter: doud-ems
+submission: ""
+
+releaseNotes: >-
+  Gladys Assistant 5.3.3 adds improvements to Zigbee2MQTT diagnostics and
+  compatibility, a mobile-first dashboard and scene editor, Matter device
+  handling improvements, MQTT topic matching fixes, energy and calendar fixes,
+  and security dependency updates.
