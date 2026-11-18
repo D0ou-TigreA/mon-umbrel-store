@@ -15,10 +15,10 @@ category: ai
 
 name: Hindsight
 
-# Version = version de release upstream (v1.1.0, 21/10/2026) et version du tag
+# Version = version de release upstream (v1.2.1, 10/11/2026) et version du tag
 # d'image. Jamais « latest » : umbrelOS s'en sert pour détecter les mises à
 # jour, et « latest » rend l'installation non reproductible.
-version: "1.1.0"
+version: "1.2.1"
 
 tagline: Mémoire long terme pour agents IA — API, Control Plane et MCP
 
@@ -48,7 +48,44 @@ description: >-
   L'API est protégée par une clé dérivée de l'installation ; la commande pour la
   lire est dans le README du dépôt.
 
-releaseNotes: ""
+# Notes extraites des listes de PR générées par upstream pour v1.2.0 et v1.2.1
+# (corps des releases GitHub, relevé le 18/11/2026), filtrées sur ce qui se voit
+# depuis un serveur auto-hébergé. Ce n'est pas un changelog rédigé par upstream :
+# seuls les titres de PR sont publics.
+releaseNotes: >-
+  ## v1.2.1 (10 novembre 2026)
+
+  - Base de données : les migrations du schéma de base s'appliquent au démarrage même quand l'extension de tenant (celle qui porte la clé d'API, ici `ApiKeyTenantExtension`) ne les déclare pas — c'est exactement la configuration de cette app.
+
+  - Arrêt propre : SIGTERM cesse immédiatement de réclamer des tâches et le drainage tient dans le délai de grâce.
+
+  - Local models : les loaders ONNX ne bouclent plus au démarrage à côté d'un build de modèle local.
+
+  - Recall : repli optionnel sur le reranker quand le modèle de décision échoue, et embedders distincts pour la requête et le passage.
+
+  - Control Plane : bascules par banque pour « prune » et « dedup » du recall ; ré-indexation d'un schéma avec un nouveau modèle d'embedding sans arrêter les serveurs.
+
+  - API documents : `add_tags` / `remove_tags` sur le PATCH. « Knowledge Pages » devient « Pages » (anciens noms dépréciés jusqu'à la 2.x).
+
+  - Plugin Hermes : ne réécrit plus les mémoires d'une session à chaque ajout, réessaie un recall sur une connexion keep-alive périmée, accepte les clients 1.x.
+
+  - Correctifs : une banque supprimée ne se recrée plus via ses jobs en cours ; clone / import / renommage ne peuvent plus prendre un alias existant ; les résultats MCP multi-banques ne sont plus envoyés en double ; les pièces jointes des retains échoués sont nettoyées ; perfs recall et consolidation.
+
+  ## v1.2.0 (3 novembre 2026)
+
+  - LLM : tous les appels d'outils passent désormais par un schéma de réponse, l'appel d'outils natif est abandonné. Reranker par défaut `hindsight-ai/hs-rerank-1` ; fournisseur « decision model » hébergé en option.
+
+  - Démarrage plus robuste : la sonde LLM au boot est bornée (un backend lent ne bloque plus le démarrage) et un LLM non connecté n'empêche plus le serveur de démarrer — il est sauté par le failover. Mode dégradé sans clé préservé.
+
+  - Base de données : une `HINDSIGHT_API_DATABASE_URL` fournie par l'utilisateur n'est plus remplacée par le PostgreSQL embarqué (pg0) ; `asyncpg >= 0.32` requis pour qu'une connexion perdue ne bloque plus le worker.
+
+  - Arrêt : l'API a 60 s pour rendre ses tâches en cours.
+
+  - Mémoire : une observation plus ancienne n'écrase plus un amendement plus récent du même jour ; index BM25 reconstruit à la réécriture des observations ; evidence des pages jusqu'à un budget de tokens.
+
+  - Journal des appels LLM dans le Control Plane : durée de rétention, graphe horaire sur 24 h, répartition par modèle et par opération.
+
+  - Intégrations : les outils Hindsight sont exposés à l'agent sur sa propre banque, et les sessions cron / heartbeat / subagent peuvent utiliser la mémoire (opt-in).
 
 developer: Vectorize
 
