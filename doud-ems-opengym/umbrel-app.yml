@@ -23,7 +23,7 @@ category: health
 name: openGym
 version: "1.4.5"
 tagline: Tracker de musculation open source, sans pub ni abonnement
-icon: https://raw.githubusercontent.com/GITHUB_USER/GITHUB_REPO/main/doud-ems-opengym/icon.png
+icon: https://raw.githubusercontent.com/D0ou-TigreA/mon-umbrel-store/master/doud-ems-opengym/icon.png
 description: >-
   ⚠️ Avant de créer ton premier profil, vérifie RP_ID et ORIGIN dans les
   réglages de l'app (Umbrel > openGym > Settings). Ils doivent correspondre
@@ -51,4 +51,4 @@ path: ""
 defaultUsername: ""
 defaultPassword: ""
 submitter: Edouard Miels
-submission: https://github.com/GITHUB_USER/GITHUB_REPO
+submission: https://github.com/D0ou-TigreA/mon-umbrel-store

@@ -1,1 +1,7 @@
 .DS_Store
+
+# Données locales d'une app : jamais versionnées, seuls les .gitkeep le sont.
+**/data/**
+!**/data/.gitkeep
+!**/data/**/
+!**/data/**/.gitkeep
