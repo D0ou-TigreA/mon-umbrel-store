@@ -4,7 +4,7 @@ name: ZenNotes
 tagline: Keyboard-first Markdown notes with Vim motions
 icon: https://github.com/ZenNotes/zennotes/blob/main/apps/desktop/build/icon.png?raw=true
 category: Productivity
-version: "2.81.0"
+version: "2.84.1"
 port: 7878
 description: >-
   ZenNotes is a keyboard-first, Markdown-first notes app.
@@ -32,6 +32,51 @@ support: https://github.com/ZenNotes/zennotes/issues
 gallery:
   - https://zennotes.org/images/app.png
 releaseNotes: >-
+  ## v2.84.1 (16 novembre 2026)
+  - Correctif MCP : une URL `/.well-known/` sans fichier répond 404 au lieu de
+    la page web. Certains clients MCP en HTTP bouclaient indéfiniment.
+  
+  ## v2.84.0 (9 novembre 2026)
+  - App web : une ligne ouverte ou collée sous un titre replié va bien sous sa
+    section (le titre reste replié)
+  - App web : « copier le dessin en image » remarche
+  - App web : un appui à côté d'un titre replié garde le curseur dessus (mobile)
+  
+  ## v2.83.1 (6 novembre 2026) — correctif de sécurité
+  - Seules les pages de ce serveur peuvent utiliser une session navigateur :
+    les écritures, suppressions, uploads et le socket de changements sont
+    refusés (403) depuis un autre site (GHSA-f33v-gwvr-3j4g,
+    GHSA-896c-3jmh-p7h4)
+  - Un serveur loopback sans jeton ne répond qu'aux noms locaux, ou aux noms
+    listés dans `ZENNOTES_ALLOWED_HOSTS`
+  - Les endpoints JSON exigent `Content-Type: application/json` (415 sinon)
+  
+  ## v2.83.0 (5 novembre 2026)
+  - MCP en HTTP sur `/mcp` pour les assistants distants, désactivé tant que
+    `ZENNOTES_MCP_ENABLED` n'est pas défini
+  - Un titre de note long ou invalide ne bloque plus l'API des notes
+  - Uploads > 8 Mio réparés dans l'image Docker
+  - Un lien de tableau échappé compte comme un lien ; les renommages le gardent
+  - Durcissement : CSP `sandbox` sur `/api/assets/raw`, limite de temps sur les
+    en-têtes, `GOMEMLIMIT` à 70 % de la limite mémoire du conteneur
+  
+  ## v2.82.1 (4 novembre 2026) — correctif de sécurité
+  - Durcissement des liens symboliques dans le vault : une écriture, un
+    déplacement ou un upload ne passe plus par un lien
+  - Upload ou déplacement par défaut vers un dossier `assets` qui est un lien
+    symbolique : réponse 400
+  - L'image Docker expose un healthcheck (`/zennotes-server healthcheck`)
+  
+  ## v2.82.0 (3 novembre 2026)
+  - App web : une nouvelle colonne Kanban peut porter une couleur (touche `C`)
+  - App web : une sidebar masquée peut toujours être rouverte sans clavier
+  
+  ## v2.81.1 (2 novembre 2026)
+  - App web : la colonne Open du tableau ne recouvre plus un nom long sur
+    écran tactile
+  - App web : la colonne de sélection garde sa largeur ; un tableau large
+    s'ouvre sur sa première colonne
+  
   ## v2.81.0 (2 novembre 2026)
   - Tâches récurrentes (@repeat:daily/weekly/monthly...) et rappels
   - Tableau Kanban par dossier, couleurs de colonnes
