@@ -22,7 +22,11 @@ description: >-
   docker inspect doud-ems-zennotes_server_1 --format
   '{{range .Config.Env}}{{println .}}{{end}}' | grep ZENNOTES_AUTH_TOKEN
 
-  It stays the same across app restarts and app updates.
+  It normally stays the same across app restarts and updates. A
+  reinstall (uninstall, then install again) creates a new one, so read
+  it again after a fresh install. Paste it exactly, with no trailing
+  space or newline: a wrong token is simply rejected with a 401 and no
+  message explaining why.
 developer: ZenNotes (adibhanna)
 website: https://zennotes.org
 submitter: D0ou-TigreA
