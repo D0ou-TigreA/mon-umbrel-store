@@ -15,10 +15,10 @@ category: ai
 
 name: Hindsight
 
-# Version = version de release upstream (v1.2.1, 10/11/2026) et version du tag
+# Version = version de release upstream (v1.2.3, 19/11/2026) et version du tag
 # d'image. Jamais « latest » : umbrelOS s'en sert pour détecter les mises à
 # jour, et « latest » rend l'installation non reproductible.
-version: "1.2.1"
+version: "1.2.3"
 
 tagline: Mémoire long terme pour agents IA — API, Control Plane et MCP
 
@@ -48,11 +48,36 @@ description: >-
   L'API est protégée par une clé dérivée de l'installation ; la commande pour la
   lire est dans le README du dépôt.
 
-# Notes extraites des listes de PR générées par upstream pour v1.2.0 et v1.2.1
-# (corps des releases GitHub, relevé le 18/11/2026), filtrées sur ce qui se voit
+# Notes extraites des listes de PR générées par upstream pour v1.2.2 et v1.2.3
+# (corps des releases GitHub, relevé le 20/11/2026), filtrées sur ce qui se voit
 # depuis un serveur auto-hébergé. Ce n'est pas un changelog rédigé par upstream :
-# seuls les titres de PR sont publics.
+# seuls les titres de PR sont publics. La 1.2.2 est incluse parce que ce paquet
+# passe directement de la 1.2.1 à la 1.2.3.
 releaseNotes: >-
+  ## v1.2.3 (19 novembre 2026)
+
+  - Ingestion de documents : les fichiers impairs, corrompus ou très gros ne font plus échouer l'opération, ne bouclent plus en ré-essais et ne saturent plus la mémoire.
+
+  - Hermes : nouveau réglage `reflect_budget`, pour garder un reflect court alors que le recall reste à un budget moyen.
+
+  - Plugin Hermes : les exécutions cron n'appellent plus l'auto-recall, et les workers kanban lisent la mémoire sans y écrire.
+
+  - Control Plane : `/api/graph` n'est plus compressé deux fois (correction liée à Next 16.4.6).
+
+  ## v1.2.2 (19 novembre 2026)
+
+  - Knowledge banks : ingestion plus rapide, recherche à budget de tokens, un index vectoriel par banque au lieu d'un index partagé, découpage audio/vidéo par PyAV (plus besoin d'un ffmpeg système).
+
+  - Réglage de la recherche : rerank de la recherche knowledge via tout endpoint compatible Cohere `/rerank`, y compris avec une image comme requête.
+
+  - Image « full » : EmbeddingGemma 2 est désormais embarqué dans l'image (plus de téléchargement au premier usage).
+
+  - Base de données : `pg0-embedded` monté en 0.17.0.
+
+  - Fiabilité : un compte-rendu de worker refusé ne consomme plus un ré-essai, et une tâche ne se diffère plus indéfiniment (plafond à 180 tentatives) ; correctifs de consolidation, d'observation tree et de webhooks (`mental_model.refreshed`).
+
+  - Dépendances : Next.js 16.4.6 et correctifs CVE (dnspython 2.9.2, soupsieve 4.1.2).
+
   ## v1.2.1 (10 novembre 2026)
 
   - Base de données : les migrations du schéma de base s'appliquent au démarrage même quand l'extension de tenant (celle qui porte la clé d'API, ici `ApiKeyTenantExtension`) ne les déclare pas — c'est exactement la configuration de cette app.
