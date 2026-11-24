@@ -4,7 +4,7 @@ name: ZenNotes
 tagline: Keyboard-first Markdown notes with Vim motions
 icon: https://github.com/ZenNotes/zennotes/blob/main/apps/desktop/build/icon.png?raw=true
 category: Productivity
-version: "2.84.1"
+version: "2.91.0"
 port: 7878
 description: >-
   ZenNotes is a keyboard-first, Markdown-first notes app.
@@ -36,6 +36,73 @@ support: https://github.com/ZenNotes/zennotes/issues
 gallery:
   - https://zennotes.org/images/app.png
 releaseNotes: >-
+  ## v2.91.0 (23 novembre 2026)
+  Notes reprises des releases amont `v2.91.0` et `znserver v2.91.0`. Les
+  changements marqués « poste de travail » ne concernent que les applications
+  natives (macOS/Windows/Linux) ou iOS/Android, pas ce serveur.
+
+  - Serveur : une lecture ou une écriture de note renvoie le `sha256` de la note,
+    et une écriture peut renvoyer cette valeur en `baseSha256`. Si la note a
+    changé entre-temps, le serveur répond 409 et n'écrit rien. Nouvelle capacité
+    `supportsConditionalNoteWrites` (visible sur `/api/capabilities`).
+  - Serveur : après un changement de vault, le guetteur de fichiers classe
+    désormais les changements selon la configuration du nouveau vault (et non
+    les noms de dossiers par défaut) ; un blocage au changement de vault sous
+    Windows est corrigé.
+  - Serveur : le client web embarqué passe à 2.91.0 (paquet
+    `web-2.91.0-web.hac90318bc29e477e`).
+  - Poste de travail : une note modifiée alors que le serveur est injoignable
+    affiche « Not saved », se réenregistre seule et ne recouvre pas la version
+    d'un autre appareil (la version du serveur est conservée à côté sous
+    « Note (server copy) »).
+  - Poste de travail : « Install for OpenCode » ne réécrit plus tout
+    `opencode.json` ; « Connect to Remote Vault » en échec ne bloque plus le
+    champ d'adresse sous Windows.
+
+  ## v2.90.0 (20 novembre 2026)
+  - Client web / rendu : KaTeX passe en 0.19.1 (correctif de sécurité
+    GHSA-238p-pmpm-9mq7). Les formules s'affichent à l'identique.
+  - Poste de travail (Windows) : une note recréée sous le nom d'une note
+    supprimée récupère sa propre date de création.
+
+  ## v2.89.0 (20 novembre 2026)
+  - Serveur et image Docker : inchangés par rapport à 2.84.1 (annoncé tel quel
+    en amont).
+  - Poste de travail : en-têtes supplémentaires (`CF-Access-Client-Id` /
+    `-Secret`, ou tout autre en-tête) pour atteindre un serveur auto-hébergé
+    derrière Cloudflare Access ou un autre portail ; côté CLI/MCP via
+    `ZENNOTES_REMOTE_HEADERS`.
+
+  ## v2.88.0 (19 novembre 2026)
+  - Poste de travail : un dessin créé à la racine d'un vault qui garde ses notes
+    à la racine ne disparaît plus de l'application au redémarrage.
+  - Serveur : inchangé.
+
+  ## v2.87.0 (18 novembre 2026)
+  - Client web : export PDF — la taille de police d'export séparée est suivie
+    par l'export du client web aussi.
+  - Client web : les liens de PDF continuent de s'ouvrir à leur page (le
+    marquage de ligne et « Copy link » restent réservés au poste de travail).
+  - Poste de travail : liens PDF vers une page/zoom, marquage de la ligne
+    d'arrivée, dessins Excalidraw dans les exports Word, `:set wrap` en Vim.
+  - Correction : l'id de bloc d'une tâche récurrente reste sur la tâche ouverte ;
+    les titres de tâches n'affichent plus le marqueur `^id`.
+
+  ## v2.86.0 (16 novembre 2026)
+  - Client web et poste de travail : un dessin Excalidraw apparaît enfin dans un
+    export PDF (l'export attend la fin du rendu des dessins).
+  - Client web et poste de travail : un tableau indenté sous une puce s'affiche
+    correctement en mode Édition et garde son indentation à l'enregistrement ;
+    `Mod+A` dans une cellule sélectionne la cellule.
+  - (le serveur 2.84.1 publié ce jour-là est le correctif `/.well-known/` déjà
+    présent dans la version précédente de ce store)
+
+  ## v2.85.0 (11 novembre 2026)
+  - Poste de travail : ZenNotes Web Clipper (extension navigateur) pour clipper
+    une page, une sélection ou des surlignages en note Markdown.
+  - Serveur : inchangé.
+  - Note : cette version n'apporte rien de visible depuis le client web.
+
   ## v2.84.1 (16 novembre 2026)
   - Correctif MCP : une URL `/.well-known/` sans fichier répond 404 au lieu de
     la page web. Certains clients MCP en HTTP bouclaient indéfiniment.

@@ -15,7 +15,11 @@ services:
       - ${APP_DATA_DIR}/data/server:/data
 
   server:
-    image: adibhanna/zennotes:2.84.1@sha256:934f97f0a2e4757805eca75f61787680e324ddc3617cebd2ce01d782498626b4
+    # Digest épinglé = manifeste amd64/linux de l'index 2.91.0
+    # (index multi-arch : sha256:81f2df1b…1fc978 en amont).
+    # Conséquence assumée : cette épingle ne se résout PAS sur arm64
+    # (Raspberry Pi) — elle vise la machine x86_64 de ce store.
+    image: adibhanna/zennotes:2.91.0@sha256:344181658151465e8388a3b75a26095c46fbac29dcb55fb7b8ddecebfdaa70c7
     restart: on-failure
     stop_grace_period: 1m
     user: "1000:1000"
