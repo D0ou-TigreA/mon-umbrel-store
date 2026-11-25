@@ -4,7 +4,7 @@ name: ZenNotes
 tagline: Keyboard-first Markdown notes with Vim motions
 icon: https://github.com/ZenNotes/zennotes/blob/main/apps/desktop/build/icon.png?raw=true
 category: Productivity
-version: "2.91.0"
+version: "2.92.0"
 port: 7878
 description: >-
   ZenNotes is a keyboard-first, Markdown-first notes app.
@@ -36,6 +36,33 @@ support: https://github.com/ZenNotes/zennotes/issues
 gallery:
   - https://zennotes.org/images/app.png
 releaseNotes: >-
+  ## v2.92.0 (24 novembre 2026)
+  Notes reprises des releases amont `znserver v2.92.0` et `znserver v2.91.1`
+  (le store passe directement de 2.91.0 à 2.92.0). Les changements marqués
+  « poste de travail » ne concernent que les applications natives, pas ce serveur.
+
+  - Serveur : une copie hors ligne peut désormais fusionner une note éditée à la
+    fois hors ligne et sur le serveur — la fusion se fait ligne par ligne au lieu
+    d'attendre une revue. Nouvelle route `GET /api/sync/revision?vault_id=&item=&revision=`
+    qui renvoie une révision d'un élément (son chemin à l'époque, ou son contenu
+    avec son `sha256`) ; une révision que le serveur ne garde plus répond 404
+    `REVISION_NOT_RETAINED`.
+  - Serveur : `/api/capabilities` annonce `supportsSync: 2`.
+  - Serveur : le serveur conserve le texte courant de chaque note synchronisée en
+    plus du journal de changements, dans `.zennotes/sync/` **à l'intérieur du vault**.
+    Coût : environ une copie gzippée du texte du vault, remplie une seule fois au
+    premier chargement. À surveiller si l'espace disque est compté.
+  - Serveur (2.91.1, étape intermédiaire) : socle de la copie hors ligne d'un vault
+    distant — révisions et journal de changements dans `.zennotes/sync/`, enregistrés
+    à chaque écriture (client web, mobiles, CLI `zn`, `/mcp`), réconciliation des
+    éditions faites hors du serveur (shell, `git pull`, Syncthing), routes
+    `/api/sync/manifest`, `/api/sync/changes`, `/api/sync/mutations`.
+  - Serveur (2.91.1) : nouvelle variable `ZENNOTES_SYNC_LOG_RETENTION` (durée,
+    défaut `2160h` = 90 jours) qui règle la rétention du journal de changements.
+    Les pièces jointes ne font pas encore partie d'une copie.
+  - Client web : inchangé depuis 2.91.0 (paquet
+    `web-2.91.0-web.hac90318bc29e477e`).
+
   ## v2.91.0 (23 novembre 2026)
   Notes reprises des releases amont `v2.91.0` et `znserver v2.91.0`. Les
   changements marqués « poste de travail » ne concernent que les applications
