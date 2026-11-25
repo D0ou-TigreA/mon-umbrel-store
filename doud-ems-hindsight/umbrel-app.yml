@@ -15,10 +15,10 @@ category: ai
 
 name: Hindsight
 
-# Version = version de release upstream (v1.2.3, 19/11/2026) et version du tag
+# Version = version de release upstream (v1.3.0, 24/11/2026) et version du tag
 # d'image. Jamais « latest » : umbrelOS s'en sert pour détecter les mises à
 # jour, et « latest » rend l'installation non reproductible.
-version: "1.2.3"
+version: "1.3.0"
 
 tagline: Mémoire long terme pour agents IA — API, Control Plane et MCP
 
@@ -48,69 +48,28 @@ description: >-
   L'API est protégée par une clé dérivée de l'installation ; la commande pour la
   lire est dans le README du dépôt.
 
-# Notes extraites des listes de PR générées par upstream pour v1.2.2 et v1.2.3
-# (corps des releases GitHub, relevé le 20/11/2026), filtrées sur ce qui se voit
-# depuis un serveur auto-hébergé. Ce n'est pas un changelog rédigé par upstream :
-# seuls les titres de PR sont publics. La 1.2.2 est incluse parce que ce paquet
-# passe directement de la 1.2.1 à la 1.2.3.
+# Notes extraites de la liste de PR générée par upstream pour v1.3.0 (corps de
+# la release GitHub, relevé le 25/11/2026), filtrées sur ce qui se voit depuis
+# un serveur auto-hébergé. Ce n'est pas un changelog rédigé par upstream :
+# seuls les titres de PR sont publics (aucune note de version rédigée à la main).
 releaseNotes: >-
-  ## v1.2.3 (19 novembre 2026)
+  ## v1.3.0 (24 novembre 2026)
 
-  - Ingestion de documents : les fichiers impairs, corrompus ou très gros ne font plus échouer l'opération, ne bouclent plus en ré-essais et ne saturent plus la mémoire.
+  - Knowledge banks activées par défaut (elles étaient derrière un feature flag) : ingestion multimodale, recherche à budget de tokens, CLI `hindsight kb`, outils MCP dédiés sur `/mcp/kb/{bank_id}/`, et méthodes dans les clients Python et TypeScript.
 
-  - Hermes : nouveau réglage `reflect_budget`, pour garder un reflect court alors que le recall reste à un budget moyen.
+  - Nouveaux réglages serveur : `HINDSIGHT_API_KB_ENABLE_RERANKING` (rerank par défaut des knowledge banks) et `HINDSIGHT_API_RECENCY_ALPHA` (poids de la récence dans le recall) ; `enable_reranking: false` accepté par recherche.
 
-  - Plugin Hermes : les exécutions cron n'appellent plus l'auto-recall, et les workers kanban lisent la mémoire sans y écrire.
+  - MCP : instructions propres à chaque banque renvoyées dans la réponse `initialize` ; une allowlist qui ne nomme aucun outil builtin n'en enregistre plus.
 
-  - Control Plane : `/api/graph` n'est plus compressé deux fois (correction liée à Next 16.4.6).
+  - Ingestion : vidéo découpée avec une borne de travail et codec inconnu refusé immédiatement ; tableur déclarant des millions de cellules lu cellule par cellule ; convertisseur Office isolé par worker ; le serveur arrête son plus gros worker avant la saturation mémoire ; PDF en échec réessayés au lieu d'être annulés.
 
-  ## v1.2.2 (19 novembre 2026)
+  - Base de données : les migrations conservent les schémas d'extension qu'elles ne peuvent pas déplacer (search_path), et des correctifs sur les fusions de profils d'embedding.
 
-  - Knowledge banks : ingestion plus rapide, recherche à budget de tokens, un index vectoriel par banque au lieu d'un index partagé, découpage audio/vidéo par PyAV (plus besoin d'un ffmpeg système).
+  - Performances : retain ne tient plus de connexion du pool pendant le scoring des entités ; index watermark et insertions par lots côté oracle ; recherche knowledge chronométrée par étape.
 
-  - Réglage de la recherche : rerank de la recherche knowledge via tout endpoint compatible Cohere `/rerank`, y compris avec une image comme requête.
+  - LLM : slots partagés équitablement entre tenants, banques et documents, et les requêtes live passent devant les jobs de fond ; JSON malformé réparé depuis le texte brut ; un bloc `content_filter` est traité comme un refus de politique de contenu chez tous les fournisseurs.
 
-  - Image « full » : EmbeddingGemma 2 est désormais embarqué dans l'image (plus de téléchargement au premier usage).
-
-  - Base de données : `pg0-embedded` monté en 0.17.0.
-
-  - Fiabilité : un compte-rendu de worker refusé ne consomme plus un ré-essai, et une tâche ne se diffère plus indéfiniment (plafond à 180 tentatives) ; correctifs de consolidation, d'observation tree et de webhooks (`mental_model.refreshed`).
-
-  - Dépendances : Next.js 16.4.6 et correctifs CVE (dnspython 2.9.2, soupsieve 4.1.2).
-
-  ## v1.2.1 (10 novembre 2026)
-
-  - Base de données : les migrations du schéma de base s'appliquent au démarrage même quand l'extension de tenant (celle qui porte la clé d'API, ici `ApiKeyTenantExtension`) ne les déclare pas — c'est exactement la configuration de cette app.
-
-  - Arrêt propre : SIGTERM cesse immédiatement de réclamer des tâches et le drainage tient dans le délai de grâce.
-
-  - Local models : les loaders ONNX ne bouclent plus au démarrage à côté d'un build de modèle local.
-
-  - Recall : repli optionnel sur le reranker quand le modèle de décision échoue, et embedders distincts pour la requête et le passage.
-
-  - Control Plane : bascules par banque pour « prune » et « dedup » du recall ; ré-indexation d'un schéma avec un nouveau modèle d'embedding sans arrêter les serveurs.
-
-  - API documents : `add_tags` / `remove_tags` sur le PATCH. « Knowledge Pages » devient « Pages » (anciens noms dépréciés jusqu'à la 2.x).
-
-  - Plugin Hermes : ne réécrit plus les mémoires d'une session à chaque ajout, réessaie un recall sur une connexion keep-alive périmée, accepte les clients 1.x.
-
-  - Correctifs : une banque supprimée ne se recrée plus via ses jobs en cours ; clone / import / renommage ne peuvent plus prendre un alias existant ; les résultats MCP multi-banques ne sont plus envoyés en double ; les pièces jointes des retains échoués sont nettoyées ; perfs recall et consolidation.
-
-  ## v1.2.0 (3 novembre 2026)
-
-  - LLM : tous les appels d'outils passent désormais par un schéma de réponse, l'appel d'outils natif est abandonné. Reranker par défaut `hindsight-ai/hs-rerank-1` ; fournisseur « decision model » hébergé en option.
-
-  - Démarrage plus robuste : la sonde LLM au boot est bornée (un backend lent ne bloque plus le démarrage) et un LLM non connecté n'empêche plus le serveur de démarrer — il est sauté par le failover. Mode dégradé sans clé préservé.
-
-  - Base de données : une `HINDSIGHT_API_DATABASE_URL` fournie par l'utilisateur n'est plus remplacée par le PostgreSQL embarqué (pg0) ; `asyncpg >= 0.32` requis pour qu'une connexion perdue ne bloque plus le worker.
-
-  - Arrêt : l'API a 60 s pour rendre ses tâches en cours.
-
-  - Mémoire : une observation plus ancienne n'écrase plus un amendement plus récent du même jour ; index BM25 reconstruit à la réécriture des observations ; evidence des pages jusqu'à un budget de tokens.
-
-  - Journal des appels LLM dans le Control Plane : durée de rétention, graphe horaire sur 24 h, répartition par modèle et par opération.
-
-  - Intégrations : les outils Hindsight sont exposés à l'agent sur sa propre banque, et les sessions cron / heartbeat / subagent peuvent utiliser la mémoire (opt-in).
+  - Export/import : export d'une banque inexistante refusé ; entrées d'historique et pièces jointes au-delà de 4 Go dans l'export d'une banque.
 
 developer: Vectorize
 

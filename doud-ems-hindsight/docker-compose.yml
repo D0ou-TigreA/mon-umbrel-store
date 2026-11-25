@@ -86,16 +86,16 @@ services:
 
   server:
     # Image officielle « Full » (embedder BGE + reranker MiniLM embarqués).
-    # Tag = version de release upstream v1.2.3 (19/11/2026). Digest = enfant
-    # amd64/linux de l'index multi-arch relevé le 20/11/2026 par
-    # `docker manifest inspect ghcr.io/vectorize-io/hindsight:1.2.3`.
+    # Tag = version de release upstream v1.3.0 (24/11/2026). Digest = enfant
+    # amd64/linux de l'index multi-arch relevé le 25/11/2026 par
+    # `docker manifest inspect ghcr.io/vectorize-io/hindsight:1.3.0`.
     # Les deux ensemble : le tag reste lisible pour un humain, le digest empêche
     # une dérive silencieuse (l'ancien paquet utilisait `latest`).
     # ATTENTION : ce digest est celui de l'image amd64, pas celui de l'index
     # multi-arch. Sur une machine arm64 (Umbrel sur Raspberry Pi) l'image ne se
     # résoudra pas. Choix assumé pour cette installation (x86_64) ; pour
-    # repasser multi-arch, remplacer par le digest d'index de `:1.2.3`.
-    image: ghcr.io/vectorize-io/hindsight:1.2.3@sha256:408f70db01b5e9c07a15d8477744910584662590bae5d9fcb176e725266fc372
+    # repasser multi-arch, remplacer par le digest d'index de `:1.3.0`.
+    image: ghcr.io/vectorize-io/hindsight:1.3.0@sha256:a91efa369a79e236d29c1a641656021b26e94831aad0ab67ae8030d0c3b15182
 
     # `unless-stopped` : l'app redémarre après un crash ou un reboot, mais
     # reste arrêtée si Édouard l'arrête depuis l'UI (contrairement à `always`).
