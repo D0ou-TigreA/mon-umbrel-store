@@ -4,7 +4,7 @@ name: ZenNotes
 tagline: Keyboard-first Markdown notes with Vim motions
 icon: https://github.com/ZenNotes/zennotes/blob/main/apps/desktop/build/icon.png?raw=true
 category: Productivity
-version: "2.92.0"
+version: "2.93.0"
 port: 7878
 description: >-
   ZenNotes is a keyboard-first, Markdown-first notes app.
@@ -36,6 +36,31 @@ support: https://github.com/ZenNotes/zennotes/issues
 gallery:
   - https://zennotes.org/images/app.png
 releaseNotes: >-
+  ## v2.93.0 (25 novembre 2026)
+  Notes reprises de la release amont `znserver v2.93.0`. Aucun changement de
+  code serveur : cette version met à jour l'application navigateur embarquée.
+
+  - Client web : le paquet embarqué passe de 2.91.0 à 2.93.0 (paquet
+    `web-2.93.0-web.he8bfabfc5970449f`, construit depuis ZenNotes/zennotes
+    `cfc33071`). Le paquet 2.92.0 n'avait pas bougé, d'où le saut direct.
+  - Client web : une couleur et une police par niveau de titre. Dans Settings,
+    Typography, une section Headings liste H1 à H6 avec, pour chaque niveau,
+    une couleur (issue du thème ou choisie librement) et une police.
+    « Color headings by level » colore les six niveaux d'un coup dans les
+    teintes du thème.
+  - Client web : indentation des sections. Chaque titre, et tout ce qui se
+    trouve dessous, se décale d'un cran par niveau, comme le dessine le plan,
+    dans l'éditeur et dans l'aperçu. La note reste du Markdown simple.
+  - Client web (Vim) : `Entrée` en mode visuel descend au premier caractère non
+    vide de la ligne suivante, en mode normal, en mode visuel et après un
+    opérateur, avec prise en compte d'un compte.
+  - Client web (Vim) : `Ctrl+[` quitte bien le mode insertion sous Linux et
+    Windows. Il décalait auparavant la ligne et restait en insertion.
+  - Ces préférences sont stockées dans le navigateur, comme les autres
+    réglages du client web.
+  - Serveur : `/api/capabilities` annonce toujours `supportsSync: 2` ;
+    dépendances Go et `vendorHash` inchangés.
+
   ## v2.92.0 (24 novembre 2026)
   Notes reprises des releases amont `znserver v2.92.0` et `znserver v2.91.1`
   (le store passe directement de 2.91.0 à 2.92.0). Les changements marqués

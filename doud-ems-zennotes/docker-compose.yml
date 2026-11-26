@@ -15,12 +15,13 @@ services:
       - ${APP_DATA_DIR}/data/server:/data
 
   server:
-    # Digest épinglé = manifeste amd64/linux de l'index 2.92.0
-    # (index multi-arch : sha256:52c097d8…5fdae8b0 en amont ; amd64/linux =
-    # sha256:ae58e52e12b4cbfa6a44eb834126ed8106b1806f8e616eb766c6c8f8eb4ceeae).
+    # Digest épinglé = manifeste amd64/linux de l'index 2.93.0
+    # (index multi-arch : sha256:8185455e6c2fde875641d72ef96ab46830e2f7e9ba4bcf7853bae83def2ea565 ;
+    # amd64/linux =
+    # sha256:1ae76931f5eef2d73e86884679a6b8f57388897ba9bc76709309b236e937be25).
     # Conséquence assumée : cette épingle ne se résout PAS sur arm64
     # (Raspberry Pi) — elle vise la machine x86_64 de ce store.
-    image: adibhanna/zennotes:2.92.0@sha256:ae58e52e12b4cbfa6a44eb834126ed8106b1806f8e616eb766c6c8f8eb4ceeae
+    image: adibhanna/zennotes:2.93.0@sha256:1ae76931f5eef2d73e86884679a6b8f57388897ba9bc76709309b236e937be25
     restart: on-failure
     stop_grace_period: 1m
     user: "1000:1000"
